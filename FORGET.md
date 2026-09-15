@@ -3,8 +3,14 @@
 This repository is a fork of [earendil-works/pi](https://github.com/earendil-works/pi) (MIT) that adds **one feature**: the **`/forget`** slash command, which removes the last N user turns from the model's context — optionally from the session file as well. Nothing else in this fork differs from upstream.
 
 - **Upstream base:** `f9bcd351d` (v0.85.1)
-- **Fork delta:** 2 commits (`3a15395d3`, `f9bc462b8`), 9 files, ~630 lines, all inside `packages/coding-agent`
-- **Upstream status:** not yet merged. The delta is small and self-contained; it can be ported anywhere near the base commit with `git format-patch f9bcd351d..HEAD` + `git am`.
+- **Fork delta:** 4 commits (`3a15395d3`, `f9bc462b8`, `3de96e1a4`, `0287203c1`), 11 files, ~750 lines: the feature lives in `packages/coding-agent`, plus this file and the README banner
+- **Upstream status:** not yet merged — [PR earendil-works/pi#9615](https://github.com/earendil-works/pi/pull/9615). The feature delta is small and self-contained; it can be ported anywhere near the base commit with `git format-patch f9bcd351d..HEAD` + `git am`.
+
+## Why this feature exists
+
+1. **The harness owns the model context, and pi had no rollback command.** In pi, what the model sees is derived from the session tree. When recent turns go wrong (a bad assumption, poisoned context, a direction you want to retry), the only options were `/new` (throw away everything, including the parts you want to keep) or hand-editing the session JSONL file. `/forget` makes context rollback a first-class, safe operation.
+2. **Existing navigation cannot guarantee "the model has no awareness."** You can approximate soft forgetting with `/tree` + "no summary", but the `/tree` flow is designed to *offer* a branch summary of the path you leave — and one accepted summary re-introduces the "forgotten" content into the model context. `/forget` makes the no-summary path the only path, so the guarantee is structural rather than a matter of per-navigation discipline.
+3. **The append-only session format cannot physically delete turns.** Session files are append-only by design and `/tree` only moves the leaf. When the goal is "these turns must not exist in the file" — not visible in `/tree`, exports, shares, or future resumes — a sanctioned rewrite is required. `--hard` provides it with explicit confirmation and, by design, no backup.
 
 ## What it does
 
