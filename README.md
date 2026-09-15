@@ -1,3 +1,9 @@
+> ## Fork addition: `/forget`
+>
+> This fork of [earendil-works/pi](https://github.com/earendil-works/pi) adds one feature: the **`/forget`** command, which removes the last N user turns from the model context (soft, recoverable via `/tree`) or from the session file (`--hard` — no backup, cannot be undone).
+>
+> **Usage, semantics, and limitations: [FORGET.md](FORGET.md)** · Everything else in this repository is unchanged upstream pi.
+
 <p align="center">
   <a href="https://pi.dev">
     <img alt="pi logo" src="https://pi.dev/logo-auto.svg" width="128">
