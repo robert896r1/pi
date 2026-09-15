@@ -3,7 +3,7 @@
 This repository is a fork of [earendil-works/pi](https://github.com/earendil-works/pi) (MIT) that adds **one feature**: the **`/forget`** slash command, which removes the last N user turns from the model's context — optionally from the session file as well. Nothing else in this fork differs from upstream.
 
 - **Upstream base:** `f9bcd351d` (v0.85.1)
-- **Fork delta:** 4 commits (`3a15395d3`, `f9bc462b8`, `3de96e1a4`, `0287203c1`), 11 files, ~750 lines: the feature lives in `packages/coding-agent`, plus this file and the README banner
+- **Fork delta:** commits `3a15395d3..HEAD` on top of the base: the feature lives in `packages/coding-agent` (9 files), plus this file and the README banner
 - **Upstream status:** not yet merged — [PR earendil-works/pi#9615](https://github.com/earendil-works/pi/pull/9615). The feature delta is small and self-contained; it can be ported anywhere near the base commit with `git format-patch f9bcd351d..HEAD` + `git am`.
 
 ## Why this feature exists
