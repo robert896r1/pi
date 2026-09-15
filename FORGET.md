@@ -15,9 +15,9 @@ This repository is a fork of [earendil-works/pi](https://github.com/earendil-wor
 
 Key properties:
 
-- **The model has no awareness of the removed turns.** No branch summary is created and no compaction summary is generated for the removed content. The next response is generated from exactly the retained messages.
+- **The model has no awareness of the removed turns.** No branch summary is created and no compaction summary is generated for the removed content. The next response is generated from exactly the retained messages. (The guarantee is conditional on later `/tree` use — see [Limitations](#limitations).)
 - **The cut always lands on a user-message boundary.** A "user turn" is a user message plus everything after it up to the next user message (or the leaf) — including the assistant's `toolCall`/`toolResult` traffic. This is why a turn that used a tool removes 4 entries instead of 2: removing the user message and the final answer while leaving the tool call behind would (a) leave the model with direct evidence of the "forgotten" turn, and (b) leave a dangling `toolResult` with no matching `toolCall`, which is an invalid context.
-- **Hard mode asks for confirmation**, stating: *"The session file will be rewritten. No backup will be written. This cannot be undone."*
+- **Hard mode asks for confirmation**, stating: *"The session file will be rewritten. No backup will be written. This cannot be undone."* If the session has abandoned branches (from `/tree`), the dialog also states how many of their entries will be deleted.
 - **`/forget` is only accepted while idle** — it is refused while a response, compaction, or tree navigation is in progress.
 
 ## Usage
@@ -64,6 +64,7 @@ Errors:
 
 ## Limitations
 
+- **The no-awareness guarantee is conditional on how you use `/tree` afterwards.** A soft `/forget` leaves the removed turns as an abandoned branch. If you later navigate away from that branch with `/tree` and *accept a branch summary*, a summary of the removed content is attached to the context and the model learns about it again. Choose "no summary" (or never accept a summary of the removed branch) to preserve the guarantee.
 - Token counts are approximate (`~N tokens` uses a chars/4 heuristic, not the provider tokenizer).
 - `N` counts user messages on the active path (the current branch). Injected `custom_message` entries are not counted as user turns.
 - The harness does not own the provider's KV cache. The shortened message list is what gets sent, and correctness does not depend on cache invalidation — but no explicit cache flush is issued either.
